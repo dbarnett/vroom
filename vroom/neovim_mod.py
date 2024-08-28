@@ -11,7 +11,7 @@ class Communicator(VimCommunicator):
 
   _listen_addr = None
 
-  def __init__(self, args, env, writer):
+  def __init__(self, args, env, writer, pre_v08=False):
     self.writer = writer.commands
     self.args = args
     self.start_command = [
@@ -21,6 +21,7 @@ class Communicator(VimCommunicator):
         '-c', 'source %s' % CONFIGFILE]
     self.env = env
     self._cache = {}
+    self._pre_v08 = pre_v08
 
   def Quit(self):
     if not hasattr(self, 'nvim'):
@@ -35,9 +36,10 @@ class Communicator(VimCommunicator):
       raise InvocationError('Called Start on already-running neovim instance')
     tmpdir = tempfile.mkdtemp()
     self._listen_addr = os.path.join(tmpdir, 'nvim.pipe')
-    # Legacy env var, used by nvim <0.8
-    self.env['NVIM_LISTEN_ADDRESS'] = self._listen_addr
-    self.start_command += ['--listen', self._listen_addr]
+    if self._pre_v08:
+      self.env['NVIM_LISTEN_ADDRESS'] = self._listen_addr
+    else:
+      self.start_command += ['--listen', self._listen_addr]
 
     self.process = subprocess.Popen(self.start_command, env=self.env)
     start_time = time.time()

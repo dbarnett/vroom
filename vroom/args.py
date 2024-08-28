@@ -108,18 +108,18 @@ Keeps vim open after a vroom failure, allowing you to inspect vim's state.
 """)
 
 parser.add_argument(
-    '--neovim',
-    action='store_true',
-    help="""
-Run Neovim instead of Vim
-""")
-
-parser.add_argument(
     '--vim-cmd',
     help="""
 Vim command to use internally, useful if you need to override the path to the
 vim executable vroom should use. Defaults to 'vim' or 'nvim', corresponding to
 the --neovim arg.
+""")
+
+parser.add_argument(
+    '--neovim',
+    action='store_true',
+    help="""
+Defaults to Neovim instead of Vim. Equivalent to `--vim-cmd=nvim`.
 """)
 
 #
