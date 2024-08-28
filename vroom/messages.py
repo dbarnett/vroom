@@ -66,16 +66,15 @@ def StripBuiltinMessages(messages):
 class Messenger(object):
   """Keeps an eye on vim, watching out for unexpected/error-like messages."""
 
-  def __init__(self, vim, env, writer):
+  def __init__(self, env, writer):
     """Creates the messenger.
 
     Args:
-      vim: The vim handler.
       env: The vroom Environment object.
       writer: A place to log messages.
     """
-    self.vim = vim
     self.env = env
+    self.vim = env.vim
     self.writer = writer.messages
 
   def Verify(self, old, new, expectations):

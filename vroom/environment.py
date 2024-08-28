@@ -2,11 +2,9 @@
 
 This is an object with all of the vroom verifiers asked. Good for one file.
 """
-import vroom.buffer
-import vroom.messages
+import vroom.editor
 import vroom.output
 import vroom.shell
-import vroom.vim
 
 
 class Environment(object):
@@ -22,10 +20,8 @@ class Environment(object):
     self.filename = filename
     self.writer = vroom.output.Writer(filename, args)
     self.shell = vroom.shell.Communicator(filename, self, self.writer)
-    if args.neovim:
-      import vroom.neovim_mod as neovim_mod
-      self.vim = neovim_mod.Communicator(args, self.shell.env, self.writer)
-    else:
-      self.vim = vroom.vim.Communicator(args, self.shell.env, self.writer)
-    self.buffer = vroom.buffer.Manager(self.vim)
-    self.messenger = vroom.messages.Messenger(self.vim, self, self.writer)
+    self.editor = vroom.editor.EditorRunner(args, self)
+    # These are initialized after vim communicator is initialized.
+    self.vim = None
+    self.buffer = None
+    self.messenger = None

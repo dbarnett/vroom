@@ -7,6 +7,7 @@ import vroom.args
 import vroom.buffer
 import vroom.command
 import vroom.environment
+import vroom.messages
 import vroom.output
 import vroom.shell
 import vroom.test
@@ -36,6 +37,7 @@ class Vroom(object):
     self.dirty = False
     self.env = vroom.environment.Environment(filename, args)
     self.ResetCommands()
+    self.vim = None
 
   def ResetCommands(self):
     self._running_command = None
@@ -71,7 +73,9 @@ class Vroom(object):
     lines = list(filehandle)
     try:
       self.env.writer.Begin(lines)
-      self.env.vim.Start()
+      self.env.vim = self.env.editor.Spawn()
+      self.env.buffer = vroom.buffer.Manager(self.env.vim)
+      self.env.messenger = vroom.messages.Messenger(self.env, self.env.writer)
       self.Run(lines)
     except vroom.ParseError as e:
       self.Record(vroom.test.RESULT.ERROR, e)
@@ -86,7 +90,7 @@ class Vroom(object):
       self.env.writer.actions.Exception(*sys.exc_info())
     finally:
       if not self.env.args.interactive:
-        if not self.env.vim.Quit():
+        if self.env.vim and not self.env.vim.Quit():
           self.dirty = True
           self.env.vim.Kill()
     status = self.env.writer.Status()
