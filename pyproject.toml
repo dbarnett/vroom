@@ -9,6 +9,9 @@ readme = "README.md"
 license = { text = "Apache 2.0" }
 description = "Launch your vimscript tests"
 requires-python = ">= 3.4"
+dependencies = [
+    "argcomplete",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",

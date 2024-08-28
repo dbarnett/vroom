@@ -1,4 +1,5 @@
 """Vroom command line arguments."""
+import argcomplete  # type: ignore
 import argparse
 from argparse import SUPPRESS
 import glob
@@ -269,6 +270,9 @@ parser.add_argument(
 The dummy responder executable (either a path or something on the $PATH).
 Defaults to the right thing if you installed vroom normally.
 """)
+
+# Enrich with argcomplete options.
+argcomplete.autocomplete(parser)
 
 
 def Parse(args):
